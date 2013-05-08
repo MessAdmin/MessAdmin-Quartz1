@@ -17,7 +17,7 @@
 	<parent>
 		<groupId>net.sourceforge.messadmin</groupId>
 		<artifactId>MessAdmin</artifactId>
-		<version>5.3</version>
+		<version>5.4</version>
 	</parent>
 
 	<!-- Dependencies -->
@@ -28,14 +28,13 @@
 			<artifactId>MessAdmin-Core</artifactId>
 		</dependency>
 		<dependency>
-			<!-- 1.4.5 : quartz|quartz -->
 			<!-- 1.5.2 : quartz|quartz -->
 			<!-- 1.6.6 : not in maven repo -->
 			<!-- 1.7.3 : org.quartz-scheduler|quartz -->
-			<!-- 1.8.x : org.quartz-scheduler|quartz -->
-			<groupId>quartz</groupId>
+			<!-- 1.8.6 : org.quartz-scheduler|quartz -->
+			<groupId>opensymphony</groupId>
 			<artifactId>quartz</artifactId>
-			<version>[1.5.2,2.0)</version>
+			<version>[1.6.2,2.0)</version>
 			<optional>true</optional><!-- Optional so as to not force an old Quartz jar for those using org.quartz-scheduler... -->
 			<exclusions>
 				<exclusion>
@@ -50,12 +49,16 @@
 					<groupId>javax.transaction</groupId>
 					<artifactId>jta</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>c3p0</groupId>
+					<artifactId>c3p0</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>1.2.9</version>
+			<version>2.0.8</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -78,8 +81,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>1.2.9</version>
+			<artifactId>spring-support</artifactId><!-- Spring 2.5+: spring-context-support -->
+			<version>2.0.8</version>
 			<optional>true</optional>
 			<exclusions>
 				<exclusion>
@@ -102,9 +105,4 @@
 	<!-- - - - - - - -  -->
 
 	<packaging>jar</packaging>
-
-	<properties>
-		<maven.compiler.source>1.4</maven.compiler.source>
-		<maven.compiler.target>1.4</maven.compiler.target>
-	</properties>
 </project>
