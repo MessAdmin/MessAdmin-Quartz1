@@ -18,22 +18,22 @@ import org.quartz.Scheduler;
 final class SpringQuartzUtils {
 
 	private static transient Method getWebApplicationContext;
-	private static transient Class schedulerFactoryBeanClass;
+	private static transient Class<?> schedulerFactoryBeanClass;
 	private static transient Method getBeansOfType;
 	private static transient Method getObject;
 	private static transient Method isRunning;
 
 	static {
 		try {
-			Class webApplicationContextUtilsClass = Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
+			Class<?> webApplicationContextUtilsClass = Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
 			getWebApplicationContext = webApplicationContextUtilsClass.getMethod("getWebApplicationContext", new Class[] {ServletContext.class});
-			Class webApplicationContextClass = Class.forName("org.springframework.web.context.WebApplicationContext");
+			Class<?> webApplicationContextClass = Class.forName("org.springframework.web.context.WebApplicationContext");
 			schedulerFactoryBeanClass = Class.forName("org.springframework.scheduling.quartz.SchedulerFactoryBean");
 			getBeansOfType = webApplicationContextClass.getMethod("getBeansOfType", new Class[] {Class.class});
-			getObject = schedulerFactoryBeanClass.getMethod("getObject", null);
+			getObject = schedulerFactoryBeanClass.getMethod("getObject");
 			try {
 				// @since Spring 2.0
-				isRunning = schedulerFactoryBeanClass.getMethod("isRunning", null);
+				isRunning = schedulerFactoryBeanClass.getMethod("isRunning");
 			} catch (NoSuchMethodException oldSpring1Version) {
 			}
 		} catch (LinkageError e) {
@@ -63,7 +63,7 @@ final class SpringQuartzUtils {
 		boolean schedulerBeanIsRunning = true;// default value for Spring 1.x
 		if (isRunning != null) {
 			try {
-				schedulerBeanIsRunning = ((Boolean) isRunning.invoke(schedulerFactoryBean, null)).booleanValue();
+				schedulerBeanIsRunning = ((Boolean) isRunning.invoke(schedulerFactoryBean)).booleanValue();
 			} catch (Exception ignore) {}
 		}
 		return schedulerBeanIsRunning;
@@ -73,7 +73,7 @@ final class SpringQuartzUtils {
 		// return (Scheduler) schedulerBean.getObject();
 		Scheduler scheduler = null;
 		try {
-			scheduler = (Scheduler) getObject.invoke(schedulerFactoryBean, null);
+			scheduler = (Scheduler) getObject.invoke(schedulerFactoryBean);
 		} catch (Exception ignore) {
 		}
 		return scheduler;

@@ -5,7 +5,6 @@ package clime.messadmin.providers.quartz;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -75,10 +74,8 @@ abstract class AbstractQuartzTable extends BaseTabularDataProvider {
 		return "<input type=\"checkbox\" " + (active ? "checked=\"checked\"" : "") + " disabled=\"disabled\" readonly=\"readonly\" />";
 	}
 
-	protected boolean isCurrentlyExecuting(JobDetail jobDetail, List/*<JobExecutionContext>*/ currentlyExecutingJobs) {
-		Iterator/*<JobExecutionContext>*/ iter = currentlyExecutingJobs.iterator();
-		while (iter.hasNext()) {
-			JobExecutionContext jec = (JobExecutionContext) iter.next();
+	protected boolean isCurrentlyExecuting(JobDetail jobDetail, List<JobExecutionContext> currentlyExecutingJobs) {
+		for (JobExecutionContext jec : currentlyExecutingJobs) {
 			if (jobDetail.equals(jec.getJobDetail())) {
 				return true;
 			}

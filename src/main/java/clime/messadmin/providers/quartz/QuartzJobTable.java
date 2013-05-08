@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
@@ -34,6 +35,7 @@ class QuartzJobTable extends AbstractQuartzTable {
 		super(servletContext, displayProvider);
 	}
 
+	@Override
 	protected String getTableCaption(Scheduler scheduler) {
 		//FIXME add ajax links to: pause / resume
 		try {
@@ -43,6 +45,7 @@ class QuartzJobTable extends AbstractQuartzTable {
 		}
 	}
 
+	@Override
 	public String[] getTabularDataLabels() {
 		return new String[] {
 				"", // empty label for actions: run, interrupt, etc.//$NON-NLS-1
@@ -57,11 +60,12 @@ class QuartzJobTable extends AbstractQuartzTable {
 		};
 	}
 
+	@Override
 	public Object[][] getTabularData(Scheduler scheduler) throws SchedulerException {
 		final NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
 		final Format dateFormatter = FastDateFormat.getInstance(DateUtils.DEFAULT_DATE_TIME_FORMAT);
-		List data = new LinkedList();
-		List/*<JobExecutionContext>*/ currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();//TODO add information "currently running" (italique, ...) + "currently running but paused"
+		List<Object> data = new LinkedList<Object>();
+		List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();//TODO add information "currently running" (italic, ...) + "currently running but paused"
 		String[] allJobGroupNames = scheduler.getJobGroupNames();
 		for (int g = 0; g < allJobGroupNames.length; ++g) {
 			String jobGroupName = allJobGroupNames[g];
@@ -85,11 +89,11 @@ class QuartzJobTable extends AbstractQuartzTable {
 			}
 		}
 
-		Object[][] result = (Object[][]) data.toArray(new Object[data.size()][]);
+		Object[][] result = data.toArray(new Object[data.size()][]);
 		return result;
 	}
 
-	protected String getJobCSSStyle(JobDetail jobDetail, List/*<JobExecutionContext>*/ currentlyExecutingJobs) {
+	protected String getJobCSSStyle(JobDetail jobDetail, List<JobExecutionContext> currentlyExecutingJobs) {
 		if (isCurrentlyExecuting(jobDetail, currentlyExecutingJobs)) {
 			return "font-style: italic;";
 		} else {
@@ -97,7 +101,7 @@ class QuartzJobTable extends AbstractQuartzTable {
 		}
 	}
 
-	private String buildActionLinks(Scheduler scheduler, JobDetail jobDetail, List/*<JobExecutionContext>*/ currentlyExecutingJobs) {
+	private String buildActionLinks(Scheduler scheduler, JobDetail jobDetail, List<JobExecutionContext> currentlyExecutingJobs) {
 		StringBuffer out = new StringBuffer(64);
 		if (isCurrentlyExecuting(jobDetail, currentlyExecutingJobs)) {
 			if (QuartzUtils.isInterruptable(jobDetail)) {

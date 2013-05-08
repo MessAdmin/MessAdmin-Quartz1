@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.SchedulerRepository;
@@ -72,6 +73,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 	/***********************************************************************/
 
 	/** {@inheritDoc} */
+	@Override
 	public int getPriority() {
 		return 1000;
 	}
@@ -81,7 +83,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 	/** {@inheritDoc} */
 	public String getApplicationDataTitle(ServletContext context) {
 		final ClassLoader cl = Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
-		Set schedulers = new HashSet();
+		Set<Object> schedulers = new HashSet<Object>();
 		schedulers.addAll(SpringQuartzUtils.getSchedulerFactoryBeans(context));
 		schedulers.addAll(SchedulerRepository.getInstance().lookupAll());
 		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "title", new Object[] {//$NON-NLS-1$
@@ -92,10 +94,10 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 	/** {@inheritDoc} */
 	public String getXHTMLApplicationData(ServletContext context) {
 		final StringBuffer out = new StringBuffer(1024);
-		final Set/*<Scheduler>*/ visited = new HashSet();
+		final Set<Scheduler> visited = new HashSet<Scheduler>();
 
 		// Spring
-		Collection schedulerBeans = SpringQuartzUtils.getSchedulerFactoryBeans(context);
+		Collection/*<SchedulerFactoryBean>*/ schedulerBeans = SpringQuartzUtils.getSchedulerFactoryBeans(context);
 		if ( ! schedulerBeans.isEmpty()) {
 			for (Iterator/*<SchedulerFactoryBean>*/ it = schedulerBeans.iterator(); it.hasNext();) {
 				Object/*SchedulerFactoryBean*/ schedulerFactoryBean = it.next();
@@ -120,8 +122,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 //		((SchedulerFactory) context.getAttribute(QuartzInitializerListener.QUARTZ_FACTORY_KEY)).getAllSchedulers()
 //		==
 //		SchedulerRepository.getInstance().lookupAll()
-		for (Iterator/*<Scheduler>*/ it = SchedulerRepository.getInstance().lookupAll().iterator(); it.hasNext();) {
-			Scheduler scheduler = (Scheduler) it.next();
+		for (Scheduler scheduler : (Collection<Scheduler>) SchedulerRepository.getInstance().lookupAll()) {
 			if (! visited.contains(scheduler)) {
 				visited.add(scheduler);
 				dump(out, context, scheduler);
@@ -137,7 +138,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 		try {
 			// scheduler Summary
 			out.append("<pre>").append(StringUtils.escapeXml(scheduler.getMetaData().getSummary())).append("</pre>");//$NON-NLS-1$//$NON-NLS-2$
-			if (! QuartzUtils.isStarted(scheduler) || scheduler.isShutdown()) {
+			if (! scheduler.isStarted() || scheduler.isShutdown()) {
 				// No need to display details
 				return;
 			}
@@ -153,7 +154,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 				out.append(buildActionLink(urlPause, I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.scheduler.pause"), this));//$NON-NLS-1$
 			}
 			// TODO link to shutdown()?
-			List/*<JobExecutionContext>*/ currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
+			List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
 			// Triggers: scheduler.getTriggerGroupNames();
 			new QuartzTriggerTable(context, this).getXHTMLData(out, scheduler);
 			// Jobs: scheduler.getJobGroupNames();
@@ -204,6 +205,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		String quartzAction = request.getParameter(PARAM_QUARTZ_ACTION_NAME);
 		if (StringUtils.isBlank(quartzAction)) {

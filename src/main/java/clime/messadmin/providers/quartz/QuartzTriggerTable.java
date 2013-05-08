@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -38,6 +39,7 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 		super(servletContext, displayProvider);
 	}
 
+	@Override
 	protected String getTableCaption(Scheduler scheduler) {
 		//FIXME add ajax links to: pauseAll / resumeAll
 		try {
@@ -47,10 +49,9 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 		}
 	}
 
+	@Override
 	public String[] getTabularDataLabels() {
-		if (QuartzUtils.hasTriggerPriority()) {
-			//TODO add "priority" column
-		}
+		//TODO add "priority" column
 		return new String[] {
 				"", // empty label for actions: run, interrupt, etc.//$NON-NLS-1
 				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.group"),//$NON-NLS-1
@@ -64,13 +65,14 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 		};
 	}
 
+	@Override
 	public Object[][] getTabularData(Scheduler scheduler) throws SchedulerException {
 		final NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
 		final Format dateFormatter = FastDateFormat.getInstance(DateUtils.DEFAULT_DATE_TIME_FORMAT);
-		List data = new LinkedList();
-		List/*<JobExecutionContext>*/ currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
+		List<Object> data = new LinkedList<Object>();
+		List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
 		String[] allTriggerGroupNames = scheduler.getTriggerGroupNames();
-		Set/*<String>*/ pausedTriggerGroups = scheduler.getPausedTriggerGroups();
+		Set<String> pausedTriggerGroups = scheduler.getPausedTriggerGroups();
 		for (int g = 0; g < allTriggerGroupNames.length; ++g) {
 			String triggerGroupName = allTriggerGroupNames[g];
 			String[] triggerNames = scheduler.getTriggerNames(triggerGroupName);
@@ -80,7 +82,7 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 //				assert triggerName.equals(trigger.getName());
 //				assert triggerGroupName.equals(trigger.getGroup());
 				JobDetail jobDetail = scheduler.getJobDetail(trigger.getJobName(), trigger.getJobGroup());
-				Integer triggerPriority = QuartzUtils.getTriggerPriority(trigger);//TODO add as column (with +/- action) if != Trigger.DEFAULT_PRIORITY
+				int triggerPriority = trigger.getPriority();//TODO add as column (with +/- action) if != Trigger.DEFAULT_PRIORITY
 				int triggerState = scheduler.getTriggerState(triggerName, triggerGroupName);
 				int triggerMisfireInstruction = trigger.getMisfireInstruction();// TODO add information on MisfireInstruction of trigger (use i18n trigger.MisfireInstruction.n?)
 				data.add(new Object[] {
@@ -104,11 +106,11 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 			}
 		}
 
-		Object[][] result = (Object[][]) data.toArray(new Object[data.size()][]);
+		Object[][] result = data.toArray(new Object[data.size()][]);
 		return result;
 	}
 
-	protected String getTriggerCSSStyle(JobDetail jobDetail, List/*<JobExecutionContext>*/ currentlyExecutingJobs) {
+	protected String getTriggerCSSStyle(JobDetail jobDetail, List<JobExecutionContext> currentlyExecutingJobs) {
 		if (isCurrentlyExecuting(jobDetail, currentlyExecutingJobs)) {
 			return "font-style: italic;";
 		} else {
@@ -116,7 +118,7 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 		}
 	}
 
-	private String buildActionLinks(Scheduler scheduler, Trigger trigger, Set/*<String>*/ pausedTriggerGroups, JobDetail jobDetail, List/*<JobExecutionContext>*/ currentlyExecutingJobs) throws SchedulerException {
+	private String buildActionLinks(Scheduler scheduler, Trigger trigger, Set<String> pausedTriggerGroups, JobDetail jobDetail, List<JobExecutionContext> currentlyExecutingJobs) throws SchedulerException {
 		StringBuffer out = new StringBuffer(64);
 //		boolean isTriggerGroupPaused = pausedTriggerGroups.contains(trigger.getGroup());
 		int triggerState = scheduler.getTriggerState(trigger.getName(), trigger.getGroup());
