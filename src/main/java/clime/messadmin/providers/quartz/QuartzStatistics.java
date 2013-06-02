@@ -32,7 +32,7 @@ import clime.messadmin.utils.Integers;
 import clime.messadmin.utils.StringUtils;
 
 /**
- * Displays Quartz 1.x {@link Scheduler}'s statistics.<br />
+ * Displays Quartz 1.x {@link org.quartz.Scheduler}'s statistics.<br />
  * This implementation uses Spring to fetch the {@link org.springframework.scheduling.quartz.SchedulerFactoryBean SchedulerFactoryBean},
  * and also lookups Quartz' {@link SchedulerRepository}.
  *
@@ -255,6 +255,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 			}
 		} catch (SchedulerException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+			return;
 		}
 		displayXHTMLApplicationData(request, response, context);
 	}

@@ -26,10 +26,10 @@ final class SpringQuartzUtils {
 	static {
 		try {
 			Class<?> webApplicationContextUtilsClass = Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
-			getWebApplicationContext = webApplicationContextUtilsClass.getMethod("getWebApplicationContext", new Class[] {ServletContext.class});
+			getWebApplicationContext = webApplicationContextUtilsClass.getMethod("getWebApplicationContext", ServletContext.class);
 			Class<?> webApplicationContextClass = Class.forName("org.springframework.web.context.WebApplicationContext");
 			schedulerFactoryBeanClass = Class.forName("org.springframework.scheduling.quartz.SchedulerFactoryBean");
-			getBeansOfType = webApplicationContextClass.getMethod("getBeansOfType", new Class[] {Class.class});
+			getBeansOfType = webApplicationContextClass.getMethod("getBeansOfType", Class.class);
 			getObject = schedulerFactoryBeanClass.getMethod("getObject");
 			try {
 				// @since Spring 2.0
@@ -47,12 +47,12 @@ final class SpringQuartzUtils {
 	}
 
 	public static Collection/*<SchedulerFactoryBean>*/ getSchedulerFactoryBeans(ServletContext context) {
-		Map/*<String, SchedulerFactoryBean>*/ schedulerBeans = Collections.EMPTY_MAP;
+		Map/*<String, SchedulerFactoryBean>*/ schedulerBeans = Collections.emptyMap();
 		//WebApplicationContext webContext = WebApplicationContextUtils.getWebApplicationContext(context);
 		//Map/*<String, SchedulerFactoryBean>*/ schedulerBeans = webContext.getBeansOfType(SchedulerFactoryBean.class);
 		try {
-			Object webContext = getWebApplicationContext.invoke(null, new Object[] {context});
-			schedulerBeans = (Map) getBeansOfType.invoke(webContext, new Object[] {schedulerFactoryBeanClass});
+			Object webContext = getWebApplicationContext.invoke(null, context);
+			schedulerBeans = (Map) getBeansOfType.invoke(webContext, schedulerFactoryBeanClass);
 		} catch (Exception ignore) {
 		}
 		return schedulerBeans.values();

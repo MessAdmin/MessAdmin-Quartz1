@@ -67,11 +67,9 @@ class QuartzJobTable extends AbstractQuartzTable {
 		List<Object> data = new LinkedList<Object>();
 		List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();//TODO add information "currently running" (italic, ...) + "currently running but paused"
 		String[] allJobGroupNames = scheduler.getJobGroupNames();
-		for (int g = 0; g < allJobGroupNames.length; ++g) {
-			String jobGroupName = allJobGroupNames[g];
+		for (String jobGroupName : allJobGroupNames) {
 			String[] jobNames = scheduler.getJobNames(jobGroupName);
-			for (int t = 0; t < jobNames.length; ++t) {
-				String jobName = jobNames[t];
+			for (String jobName : jobNames) {
 				JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
 //				assert jobName.equals(jobDetail.getName());
 //				assert jobGroupName.equals(jobDetail.getGroup());

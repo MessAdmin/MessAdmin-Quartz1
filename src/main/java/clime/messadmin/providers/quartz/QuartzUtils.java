@@ -10,6 +10,7 @@ import java.util.Iterator;
 import javax.servlet.ServletContext;
 
 import org.quartz.InterruptableJob;
+import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -56,8 +57,7 @@ final class QuartzUtils {
 		// Spring
 		Collection/*<SchedulerFactoryBean>*/ schedulerBeans = SpringQuartzUtils.getSchedulerFactoryBeans(context);
 		if ( ! schedulerBeans.isEmpty()) {
-			for (Iterator/*<SchedulerFactoryBean>*/ it = schedulerBeans.iterator(); it.hasNext();) {
-				Object/*SchedulerFactoryBean*/ schedulerFactoryBean = it.next();
+			for (Object/*SchedulerFactoryBean*/ schedulerFactoryBean : schedulerBeans) {
 				boolean schedulerBeanIsRunning = SpringQuartzUtils.isRunning(schedulerFactoryBean);//schedulerBean.isRunning()
 //				if (schedulerBeanIsRunning) {// Spring 2.0
 					Scheduler scheduler = SpringQuartzUtils.getScheduler(schedulerFactoryBean);// (Scheduler) schedulerBean.getObject();
@@ -85,7 +85,7 @@ final class QuartzUtils {
 	 * </p>
 	 */
 	public static boolean isInterruptable(JobDetail jobDetail) {
-		Class jobClass = jobDetail.getJobClass();
+		Class<? extends Job> jobClass = jobDetail.getJobClass();
 		if (jobClass == null) {
 			return false;
 		}
