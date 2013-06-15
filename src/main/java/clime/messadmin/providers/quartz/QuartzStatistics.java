@@ -28,7 +28,6 @@ import clime.messadmin.admin.BaseAdminActionWithContext;
 import clime.messadmin.i18n.I18NSupport;
 import clime.messadmin.model.Server;
 import clime.messadmin.providers.spi.ApplicationDataProvider;
-import clime.messadmin.utils.Integers;
 import clime.messadmin.utils.StringUtils;
 
 /**
@@ -87,7 +86,7 @@ public class QuartzStatistics extends BaseAdminActionWithContext implements Appl
 		schedulers.addAll(SpringQuartzUtils.getSchedulerFactoryBeans(context));
 		schedulers.addAll(SchedulerRepository.getInstance().lookupAll());
 		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "title", new Object[] {//$NON-NLS-1$
-				Integers.valueOf(schedulers.size())
+				Integer.valueOf(schedulers.size())
 		});
 	}
 
