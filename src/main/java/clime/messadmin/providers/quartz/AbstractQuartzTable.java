@@ -32,6 +32,7 @@ abstract class AbstractQuartzTable extends BaseTabularDataProvider {
 	protected static final String BUNDLE_NAME = QuartzStatistics.class.getName();
 
 	protected ServletContext servletContext;
+	protected ClassLoader cl;
 	protected DisplayProvider displayProvider;
 
 	/**
@@ -41,6 +42,7 @@ abstract class AbstractQuartzTable extends BaseTabularDataProvider {
 		super();
 		this.servletContext = servletContext;
 		this.displayProvider = displayProvider;
+		this.cl = I18NSupport.getClassLoader(servletContext);
 	}
 
 	protected final String urlEncodeUTF8(String url) {
@@ -91,10 +93,9 @@ abstract class AbstractQuartzTable extends BaseTabularDataProvider {
 			nTriggers = triggersOfJob.length;
 		} catch (SchedulerException ignore) {
 		}
-		result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "job.extraInfo",//$NON-NLS-1
-				new Object[] {
-			jobClass, Integer.valueOf(nTriggers)
-		});
+		result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "job.extraInfo",//$NON-NLS-1
+				jobClass, Integer.valueOf(nTriggers)
+		);
 		return result;
 	}
 
@@ -105,34 +106,30 @@ abstract class AbstractQuartzTable extends BaseTabularDataProvider {
 			CronTrigger cTrigger = (CronTrigger) trigger;
 			String cronExpression = cTrigger.getCronExpression();//cTrigger.getExpressionSummary();
 			String timeZone = cTrigger.getTimeZone().getID();
-			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "trigger.extraInfo."+CronTrigger.class.getName(),//$NON-NLS-1
-					new Object[] {
-				triggerClass, cronExpression, timeZone
-			});
+			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "trigger.extraInfo."+CronTrigger.class.getName(),//$NON-NLS-1
+					triggerClass, cronExpression, timeZone
+			);
 		} else if (SimpleTrigger.class.isInstance(trigger)) {
 			SimpleTrigger sTrigger = (SimpleTrigger) trigger;
-			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "trigger.extraInfo."+SimpleTrigger.class.getName(),//$NON-NLS-1
-					new Object[] {
-				triggerClass, DateUtils.timeIntervalToFormattedString(sTrigger.getRepeatInterval())
-			});
+			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "trigger.extraInfo."+SimpleTrigger.class.getName(),//$NON-NLS-1
+					triggerClass, DateUtils.timeIntervalToFormattedString(sTrigger.getRepeatInterval())
+			);
 		} else if (NthIncludedDayTrigger.class.isInstance(trigger)) {
 			NthIncludedDayTrigger nTrigger = (NthIncludedDayTrigger) trigger;
 			int n = nTrigger.getN();
 			int intervalType = nTrigger.getIntervalType();
 			String fireAtTime = nTrigger.getFireAtTime();
-			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "trigger.extraInfo."+NthIncludedDayTrigger.class.getName(),//$NON-NLS-1
-					new Object[] {
-				triggerClass, Integer.valueOf(n),
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "org.quartz.NthIncludedDayTrigger.intervalType."+intervalType),
-				fireAtTime
-			});
+			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "trigger.extraInfo."+NthIncludedDayTrigger.class.getName(),//$NON-NLS-1
+					triggerClass, Integer.valueOf(n),
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "org.quartz.NthIncludedDayTrigger.intervalType."+intervalType),
+					fireAtTime
+			);
 		} else if (QuartzUtils.isDateIntervalTrigger(trigger)) { // Quartz 1.7
 			String repeatInterval = QuartzUtils.getDateIntervalTrigger_RepeatInterval(trigger);
 			Object repeatIntervalUnit = QuartzUtils.getDateIntervalTrigger_RepeatIntervalUnit(trigger);
-			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "trigger.extraInfo."+"org.quartz.DateIntervalTrigger",//$NON-NLS-1//$NON-NLS-2
-						new Object[] {
+			result = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "trigger.extraInfo."+"org.quartz.DateIntervalTrigger",//$NON-NLS-1//$NON-NLS-2
 					triggerClass, repeatInterval, repeatIntervalUnit
-			});
+			);
 		}
 		return result;
 	}

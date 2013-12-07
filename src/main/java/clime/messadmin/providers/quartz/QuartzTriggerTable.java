@@ -43,7 +43,7 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 	protected String getTableCaption(Scheduler scheduler) {
 		//FIXME add ajax links to: pauseAll / resumeAll
 		try {
-			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "caption.trigger", new Object[] {scheduler.getSchedulerName()});//$NON-NLS-1$
+			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "caption.trigger", scheduler.getSchedulerName());//$NON-NLS-1$
 		} catch (SchedulerException e) {
 			return e.toString();
 		}
@@ -54,14 +54,14 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 		//TODO add "priority" column
 		return new String[] {
 				"", // empty label for actions: run, interrupt, etc.//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.group"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.name"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.state"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.volatile"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.job.group"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.job.name"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.previousFireTime"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.trigger.nextFireTime")//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.group"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.name"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.state"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.volatile"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.job.group"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.job.name"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.previousFireTime"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.trigger.nextFireTime")//$NON-NLS-1
 		};
 	}
 
@@ -87,12 +87,12 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 						buildActionLinks(scheduler, trigger, pausedTriggerGroups, jobDetail, currentlyExecutingJobs),
 						// trigger group
 						pausedTriggerGroups.contains(triggerGroupName)//TODO action links on: trigger group (pause/resume)
-							? I18NSupport.getLocalizedMessage(BUNDLE_NAME, "trigger.paused", new Object[] {StringUtils.escapeXml(triggerGroupName)})//$NON-NLS-1$
+							? I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "trigger.paused", StringUtils.escapeXml(triggerGroupName))//$NON-NLS-1$
 							: StringUtils.escapeXml(triggerGroupName),
 						// trigger name
 						"<span title=\""+getTriggerExtraInfo(trigger)+"\" style=\""+getTriggerCSSStyle(jobDetail, currentlyExecutingJobs)+"\">" + StringUtils.escapeXml(triggerName) + "</span>",
 						// trigger state
-						I18NSupport.getLocalizedMessage(BUNDLE_NAME, "trigger.state."+triggerState),//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "trigger.state."+triggerState),//$NON-NLS-1$
 						makeCheckBox(trigger.isVolatile()),
 						// job group
 						StringUtils.escapeXml(jobDetail.getGroup()),
@@ -129,7 +129,7 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 				.append('&').append(QuartzStatistics.PARAM_TRIGGER_GROUP).append('=').append(urlEncodeUTF8(trigger.getGroup()))
 				.toString();
 			out.append(BaseAdminActionProvider.buildActionLink(urlPause,
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.trigger.pause"), displayProvider));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.trigger.pause"), displayProvider));//$NON-NLS-1$
 			break;
 		case Trigger.STATE_PAUSED:
 			//link to: resume Trigger
@@ -138,7 +138,7 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 				.append('&').append(QuartzStatistics.PARAM_TRIGGER_GROUP).append('=').append(urlEncodeUTF8(trigger.getGroup()))
 				.toString();
 			out.append(BaseAdminActionProvider.buildActionLink(urlResume,
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.trigger.resume"), displayProvider));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.trigger.resume"), displayProvider));//$NON-NLS-1$
 			break;
 		default:
 			break;
@@ -151,8 +151,8 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 				.toString();
 			out.append("&nbsp;");
 			out.append(BaseAdminActionProvider.buildActionLink(urlDelete,
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.trigger.delete"),//$NON-NLS-1$
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.trigger.delete.confirmJS"), displayProvider));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.trigger.delete"),//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.trigger.delete.confirmJS"), displayProvider));//$NON-NLS-1$
 		}
 		return out.toString();
 	}

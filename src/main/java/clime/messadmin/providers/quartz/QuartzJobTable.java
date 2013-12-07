@@ -39,7 +39,7 @@ class QuartzJobTable extends AbstractQuartzTable {
 	protected String getTableCaption(Scheduler scheduler) {
 		//FIXME add ajax links to: pause / resume
 		try {
-			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "caption.job", new Object[] {scheduler.getSchedulerName()});//$NON-NLS-1$
+			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "caption.job", scheduler.getSchedulerName());//$NON-NLS-1$
 		} catch (SchedulerException e) {
 			return e.toString();
 		}
@@ -49,14 +49,14 @@ class QuartzJobTable extends AbstractQuartzTable {
 	public String[] getTabularDataLabels() {
 		return new String[] {
 				"", // empty label for actions: run, interrupt, etc.//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.group"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.name"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.description"),//$NON-NLS-1
-				//I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.class"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.durable"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.volatile"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.stateful"),//$NON-NLS-1
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.job.interruptable")//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.group"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.name"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.description"),//$NON-NLS-1
+				//I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.class"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.durable"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.volatile"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.stateful"),//$NON-NLS-1
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.job.interruptable")//$NON-NLS-1
 		};
 	}
 
@@ -109,7 +109,7 @@ class QuartzJobTable extends AbstractQuartzTable {
 					.append('&').append(QuartzStatistics.PARAM_JOB_GROUP).append('=').append(urlEncodeUTF8(jobDetail.getGroup()))
 					.toString();
 				out.append(BaseAdminActionProvider.buildActionLink(urlInterrupt,
-						I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.job.interrupt"), displayProvider));//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.job.interrupt"), displayProvider));//$NON-NLS-1$
 			}
 		} else {
 			//link to: scheduler.triggerJobWithVolatileTrigger(String jobName, String groupName)
@@ -118,7 +118,7 @@ class QuartzJobTable extends AbstractQuartzTable {
 				.append('&').append(QuartzStatistics.PARAM_JOB_GROUP).append('=').append(urlEncodeUTF8(jobDetail.getGroup()))
 				.toString();
 			out.append(BaseAdminActionProvider.buildActionLink(urlTrigger,
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.job.trigger"), displayProvider));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.job.trigger"), displayProvider));//$NON-NLS-1$
 		}
 		//link to: pause/resume Job[Group]
 //		out.append("&nbsp;");
@@ -127,13 +127,13 @@ class QuartzJobTable extends AbstractQuartzTable {
 //			.append('&').append(QuartzStatistics.PARAM_JOB_GROUP).append('=').append(urlEncodeUTF8(jobDetail.getGroup()))
 //			.toString();
 //		out.append(BaseAdminActionProvider.buildActionLink(urlPause,
-//				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.job.pause"), displayProvider));//$NON-NLS-1$
+//				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.job.pause"), displayProvider));//$NON-NLS-1$
 //		String urlResume = QuartzStatistics.getUrlPrefix(servletContext, scheduler).append(QuartzStatistics.QUARTZ_ACTION_JOB_RESUME)
 //			.append('&').append(QuartzStatistics.PARAM_JOB_NAME).append('=').append(urlEncodeUTF8(jobDetail.getName()))
 //			.append('&').append(QuartzStatistics.PARAM_JOB_GROUP).append('=').append(urlEncodeUTF8(jobDetail.getGroup()))
 //			.toString();
 //		out.append(BaseAdminActionProvider.buildActionLink(urlResume,
-//				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.job.resume"), displayProvider));//$NON-NLS-1$
+//				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.job.resume"), displayProvider));//$NON-NLS-1$
 		if (! isCurrentlyExecuting(jobDetail, currentlyExecutingJobs)) {
 			//link to: delete Job
 			String urlDelete = QuartzStatistics.getUrlPrefix(servletContext, scheduler).append(QuartzStatistics.QUARTZ_ACTION_JOB_DELETE)
@@ -142,8 +142,8 @@ class QuartzJobTable extends AbstractQuartzTable {
 				.toString();
 			out.append("&nbsp;");
 			out.append(BaseAdminActionProvider.buildActionLink(urlDelete,
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.job.delete"),//$NON-NLS-1$
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "action.job.delete.confirmJS"), displayProvider));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.job.delete"),//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "action.job.delete.confirmJS"), displayProvider));//$NON-NLS-1$
 		}
 		return out.toString();
 	}
