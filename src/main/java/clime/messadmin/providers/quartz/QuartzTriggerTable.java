@@ -77,6 +77,10 @@ class QuartzTriggerTable extends AbstractQuartzTable {
 			String[] triggerNames = scheduler.getTriggerNames(triggerGroupName);
 			for (String triggerName : triggerNames) {
 				Trigger trigger = scheduler.getTrigger(triggerName, triggerGroupName);
+				if (trigger == null) {
+					// trigger disappeared between list construction and exploitation
+					continue;
+				}
 //				assert triggerName.equals(trigger.getName());
 //				assert triggerGroupName.equals(trigger.getGroup());
 				JobDetail jobDetail = scheduler.getJobDetail(trigger.getJobName(), trigger.getJobGroup());
